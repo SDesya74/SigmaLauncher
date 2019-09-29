@@ -1,10 +1,11 @@
 package com.dilonexus.sigmalauncher.misc;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Point;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.WindowManager;
 
 
 public class Screen {
@@ -15,8 +16,10 @@ public class Screen {
     private static int statusBarHeight = -1;
 
     private static DisplayMetrics metrics;
-    public static void init(Activity context){
-        Display display = context.getWindowManager().getDefaultDisplay();
+    public static void init(Context context){
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        assert wm != null;
+        Display display = wm.getDefaultDisplay();
         metrics = new DisplayMetrics();
         display.getMetrics(metrics);
 

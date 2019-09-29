@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.view.View;
-import android.widget.Toast;
 
 import com.dilonexus.sigmalauncher.misc.Screen;
 
@@ -41,13 +40,11 @@ public class RoundProgressBarView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         int size = getWidth();
-        int center = size / 2;
 
         bounds.left = bounds.top = paint.getStrokeWidth();
         bounds.right = bounds.bottom = size - paint.getStrokeWidth();
 
         canvas.drawArc(bounds, 270, (float) (progressVisual * 360), false, paint);
-        canvas.drawText(Math.ceil(progress * 100) + "%", center, center, paint);
 
         double dis = (progress - progressVisual);
         progressVisual += dis < 1d/360d ? dis : dis;

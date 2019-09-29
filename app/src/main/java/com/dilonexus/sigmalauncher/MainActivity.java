@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.dilonexus.sigmalauncher.apps.AppData;
 import com.dilonexus.sigmalauncher.apps.AppManager;
 import com.dilonexus.sigmalauncher.misc.DataSaver;
-import com.dilonexus.sigmalauncher.misc.Screen;
 import com.dilonexus.sigmalauncher.views.LauncherView;
 import com.dilonexus.sigmalauncher.views.LoadingScreenView;
 
@@ -23,12 +22,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Screen.init(this);
-        DataSaver.init(this);
 
         launcher = new LauncherView(this);
         setContentView(launcher);
-
 
         loadApps();
     }
@@ -41,8 +37,6 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressWarnings("unchecked")
     public void loadApps(){
-        AppManager.init(this);
-
         loadingScreen = new LoadingScreenView(this);
         launcher.addView(loadingScreen);
 
