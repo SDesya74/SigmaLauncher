@@ -5,8 +5,18 @@ import java.io.Serializable;
 public class AppData implements Serializable {
     public long uniqueID;
     private String packageName;
+    public String getPackage(){
+        return  packageName;
+    }
     private String activityName;
+    public String getActivity() {
+        return activityName;
+    }
+
     private String name;
+    public String getName(){
+        return name;
+    }
 
     // region Popularity
     private int popularity;
@@ -23,13 +33,16 @@ public class AppData implements Serializable {
     }
     // endregion
 
+
+    private long genUniqueId(){
+        return Math.round(Math.random() * 10_000_000_000_000_000L);
+    }
     public AppData(String packageName, String activityName, String name, int popularity){
-        this.uniqueID = Math.round(Math.random() * 10000000000000000L);
+        this.uniqueID = this.genUniqueId();
+        while(AppManager.getAppByID(this.uniqueID) != null) this.uniqueID = genUniqueId();
         this.packageName = packageName;
         this.activityName = activityName;
         this.name = name;
         this.popularity = popularity;
     }
-
-
 }
