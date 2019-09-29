@@ -1,9 +1,15 @@
 package com.dilonexus.sigmalauncher.apps;
 
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.widget.Toast;
+
+import com.dilonexus.sigmalauncher.LauncherApp;
+import com.dilonexus.sigmalauncher.misc.DataSaver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +33,20 @@ public class AppManager {
             if(app.uniqueID == id) return app;
         }
         return null;
+    }
+
+    public static void startApp(AppData app){
+        Intent intent = new Intent(Intent.ACTION_MAIN, null);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.setComponent(new ComponentName(app.getPackage(), app.getActivity()));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        try{
+            app.addPopularity(1);
+            LauncherApp.getContext().startActivity(intent);
+            DataSaver.saveObject("apps", apps);
+        }catch(ActivityNotFoundException e){
+            Toast.makeText(LauncherApp.getContext(), "Activity Not Found", Toast.LENGTH_SHORT).show();
+        }
     }
 
     // region Loading Apps
