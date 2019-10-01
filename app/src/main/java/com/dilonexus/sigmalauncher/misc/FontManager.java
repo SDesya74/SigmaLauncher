@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.List;
 
 public class FontManager {
@@ -27,10 +28,15 @@ public class FontManager {
     }
 
     private static Font getFontByName(String name){
+        if(name.toLowerCase() == "default") return getDefaultFont();
         for (Font font : list) {
             if(font.getName() == name) return font;
         }
         return null;
+    }
+
+    private static Font getDefaultFont(){
+        return new Font("DEFAULT", Typeface.DEFAULT);
     }
 
     private static void setCurrentFont(Typeface typeface){
