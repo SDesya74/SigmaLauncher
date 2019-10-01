@@ -4,6 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
+import com.dilonexus.sigmalauncher.misc.FontManager;
+
 public class AppDrawer {
     private static Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private static Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -14,6 +16,7 @@ public class AppDrawer {
 
         textPaint.setTextSize(style.getPaintTextSize());
         textPaint.setColor(style.textColor);
+        textPaint.setTypeface(FontManager.getCurrentFont());
 
         canvas.drawRect(x, y, x + style.bounds.width(), y + style.bounds.height(), paint);
         canvas.drawText(
@@ -24,7 +27,7 @@ public class AppDrawer {
 
 
     private static Paint boundsPaint = new Paint();
-    public static Rect getTextBounds(String text, float size){
+    static Rect getTextBounds(String text, float size){
         Rect bounds = new Rect();
         boundsPaint.setTextSize(size);
         boundsPaint.getTextBounds(text, 0, text.length(), bounds);
