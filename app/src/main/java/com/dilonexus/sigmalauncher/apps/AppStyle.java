@@ -24,7 +24,7 @@ public class AppStyle {
 
     private int popularity;
     private int getTextSize(){
-        return 10 + popularity;
+        return 14 + popularity; // TODO: Вынести минимальный размер текста в настройки
     }
     float getPaintTextSize(){
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, getTextSize(), Screen.getMetrics());
@@ -46,7 +46,7 @@ public class AppStyle {
         float size = getPaintTextSize();
         textBounds = AppDrawer.getTextBounds(getLabel(), size);
 
-        String text = getLabel().replaceAll("(?s).", "p") + "pp";
+        String text = getLabel().replaceAll("(?s).", "p");
         bounds = AppDrawer.getTextBounds(text, size);
         bounds.bottom *= 2;
         bounds.top *= 2;
