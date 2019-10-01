@@ -6,7 +6,7 @@ import android.graphics.Typeface;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FontManager {
@@ -26,11 +26,16 @@ public class FontManager {
         if(font == null) setCurrentFont(Typeface.DEFAULT);
         else setCurrentFont(font.get());
     }
+    public static void setCurrentFont(Font font){
+        assert font != null;
+
+        setCurrentFont(font.get());
+    }
 
     private static Font getFontByName(String name){
-        if(name.toLowerCase() == "default") return getDefaultFont();
+        if(name.toLowerCase().equals("default")) return getDefaultFont();
         for (Font font : list) {
-            if(font.getName() == name) return font;
+            if(font.getName().equals(name)) return font;
         }
         return null;
     }
@@ -45,8 +50,9 @@ public class FontManager {
     }
 
     private static void loadFonts(){
+        list = new ArrayList<>();
         try {
-            String[] folder = assets.list("fonts/");
+            String[] folder = assets.list("fonts");
             assert folder != null;
             for(String file : folder){
                 Typeface typeface = Typeface.createFromAsset(assets, "fonts/" + file);
@@ -64,7 +70,7 @@ public class FontManager {
         loadFonts();
     }
 
-    private static class Font implements Serializable {
+    public static class Font implements Serializable {
         private Typeface typeface;
         Typeface get(){
             return typeface;
