@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.dilonexus.sigmalauncher.apps.AppManager;
 import com.dilonexus.sigmalauncher.misc.DataSaver;
+import com.dilonexus.sigmalauncher.misc.FontManager;
 import com.dilonexus.sigmalauncher.misc.Screen;
 
 public class LauncherApp extends android.app.Application {
@@ -18,6 +19,7 @@ public class LauncherApp extends android.app.Application {
         Screen.init(context);
         AppManager.init(context);
         DataSaver.init(context);
+        FontManager.init(context);
     }
 
     public static Context getContext() {
