@@ -2,13 +2,9 @@ package com.dilonexus.sigmalauncher.misc;
 
 import android.content.Context;
 
-import com.dilonexus.sigmalauncher.apps.AppManager;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
@@ -47,7 +43,6 @@ public class DataSaver {
         }
         return null;
     }
-
 
     private static File getInternalDirectory(){
         return new File(internalDirectory);
