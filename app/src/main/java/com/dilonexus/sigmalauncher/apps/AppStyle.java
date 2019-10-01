@@ -59,7 +59,7 @@ public class AppStyle {
     public Rect bounds;
 
     private String label;
-    public String getLabel(){
+    String getLabel(){
         if(label == null || label.length() < 1) {
             AppData data = AppManager.getAppByID(this.uniqueID);
 
