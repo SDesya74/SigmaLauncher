@@ -8,7 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.widget.Toast;
 
-import com.dilonexus.sigmalauncher.LauncherApp;
+import com.dilonexus.sigmalauncher.LauncherApplication;
 import com.dilonexus.sigmalauncher.misc.DataSaver;
 
 import java.util.ArrayList;
@@ -42,10 +42,10 @@ public class AppManager {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try{
             app.addPopularity(1);
-            LauncherApp.getContext().startActivity(intent);
+            LauncherApplication.getContext().startActivity(intent);
             DataSaver.saveObject("apps", apps);
         }catch(ActivityNotFoundException e){
-            Toast.makeText(LauncherApp.getContext(), "Activity Not Found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LauncherApplication.getContext(), "Activity Not Found", Toast.LENGTH_SHORT).show();
         }
     }
 
