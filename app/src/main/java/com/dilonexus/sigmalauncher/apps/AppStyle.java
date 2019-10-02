@@ -9,6 +9,19 @@ import com.dilonexus.sigmalauncher.misc.Screen;
 public class AppStyle {
     public long uniqueID;
 
+    // region Paddings
+    private int horizontalPadding;
+    private int verticalPadding;
+    protected void setPadding(int vertical, int horizontal){
+        horizontalPadding = horizontal;
+        verticalPadding = vertical;
+        validateBounds();
+    }
+    public void setPadding(int padding){
+        setPadding(padding, padding);
+    }
+    // endregion
+
     int backColor;
     // private int backShape;
     // private int backStyle;
@@ -20,7 +33,6 @@ public class AppStyle {
             textColor = Color.BLACK;
         }else textColor = Color.WHITE;
     }
-
 
     private int popularity;
     private int getTextSize(){
@@ -43,13 +55,7 @@ public class AppStyle {
         this.label = app.getName();
         this.popularity = app.getPopularity();
 
-        float size = getPaintTextSize();
-        textBounds = AppDrawer.getTextBounds(getLabel(), size);
-
-        String text = getLabel().replaceAll("(?s).", "p");
-        bounds = AppDrawer.getTextBounds(text, size);
-        bounds.bottom *= 2;
-        bounds.top *= 2;
+        setPadding(0);
 
         this.backColor = Color.TRANSPARENT;
         setTextColorByBackColor();
@@ -57,9 +63,24 @@ public class AppStyle {
 
     Rect textBounds;
     public Rect bounds;
+    void validateBounds(){
+        float size = getPaintTextSize();
+        textBounds = AppDrawer.getTextBounds(getLabel(), size);
+
+        bounds = new Rect(textBounds);
+
+        // region Paddings
+        bounds.left -= horizontalPadding;
+        bounds.right += horizontalPadding;
+
+        bounds.top -= verticalPadding;
+        bounds.bottom += verticalPadding;
+
+        // endregion
+    }
 
     private String label;
-    String getLabel(){
+    private String getLabel(){
         if(label == null || label.length() < 1) {
             AppData data = AppManager.getAppByID(this.uniqueID);
 
