@@ -20,6 +20,7 @@ public class AppManager {
     public static void init(Context context){
         apps = new ArrayList<>();
         manager = context.getPackageManager();
+        loadingIndex = 0;
     }
 
     public static List<AppData> getApps(){
@@ -49,7 +50,7 @@ public class AppManager {
         }
     }
 
-    // region Loading Apps
+    //region Loading Apps
     private static List<ResolveInfo> appResolveList;
     public static List<ResolveInfo> getAppResolveList(){
         return appResolveList;
@@ -57,7 +58,8 @@ public class AppManager {
     public static void loadAppsResolve(){
         Intent loader = new Intent(Intent.ACTION_MAIN, null);
         loader.addCategory(Intent.CATEGORY_LAUNCHER);
-         appResolveList = manager.queryIntentActivities(loader, 0);
+        appResolveList = manager.queryIntentActivities(loader, 0);
+        loadingIndex = 0;
     }
     private static void loadApp(ResolveInfo info){
         String packageName = info.activityInfo.packageName;
