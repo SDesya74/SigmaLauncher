@@ -1,13 +1,12 @@
 package com.dilonexus.sigmalauncher.views.widgets;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.dilonexus.sigmalauncher.apps.AppData;
@@ -23,7 +22,12 @@ public class AppGroupView extends View implements View.OnTouchListener {
     private int ROW_PADDING;
     private int CELL_PADDING;
 
-    private List<GroupItem> groupItems;
+    private int CELL_MARGIN;
+    private int ROW_MARGIN;
+
+
+
+    private List<GroupItem> groupItemTouchBounds;
     private List<GroupRow> groupRows;
     public List<GroupRow> getRows(){
         return groupRows;
@@ -32,31 +36,26 @@ public class AppGroupView extends View implements View.OnTouchListener {
         super(context);
         setOnTouchListener(this);
 
-        groupItems = new ArrayList<>();
+        groupItemTouchBounds = new ArrayList<>();
         groupRows = new ArrayList<>();
 
         ROW_PADDING = Screen.dip(3);
-        CELL_PADDING = Screen.dip(1);
+        CELL_PADDING = Screen.dip(3);
+
+        ROW_MARGIN = Screen.dip(3);
+        CELL_MARGIN = Screen.dip(3);
     }
+
+
+
 
     private int groupWidth;
     private int groupHeight;
-    public void setWidth(int width){
-        this.groupWidth = width;
-    }
 
 
-
-    private List<AppData> groupApps;
-    public void setItems(List<AppData> items){
-        groupApps = items;
-
-        groupItems.clear();
-        groupRows.clear();
-        for(AppData app : items){
-            GroupItem item = new GroupItem(app);
-            addItem(item);
-        }
+    private List<AppData> groupItems;
+    public void setItems(List<AppData> list){
+        groupItems = list;
     }
 
     private GroupRow currentRow;
@@ -74,7 +73,7 @@ public class AppGroupView extends View implements View.OnTouchListener {
     }
 
     protected void onDraw(Canvas canvas) {
-        groupItems.clear();
+        groupItemTouchBounds.clear();
         int left = getPaddingLeft();
         int top = getPaddingTop();
 
@@ -85,28 +84,35 @@ public class AppGroupView extends View implements View.OnTouchListener {
         }
     }
 
+
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        groupHeight = 0;
-        for(GroupRow row : groupRows) groupHeight += row.getHeight() + ROW_PADDING;
-        groupHeight -= ROW_PADDING;
+        groupWidth = getMeasuredWidth();
 
-        setMeasuredDimension(groupWidth, groupHeight + getPaddingTop() + getPaddingBottom());
+        groupItemTouchBounds.clear();
+        groupRows.clear();
+        currentRow = null;
+        for(AppData app : groupItems){
+            @SuppressLint("DrawAllocation")
+            GroupItem item = new GroupItem(app);
+            addItem(item);
+        }
+
+        groupHeight = 0;
+        for(GroupRow row : groupRows) groupHeight += row.getHeight() + ROW_MARGIN;
+        groupHeight -= ROW_MARGIN;
+
+        Toast.makeText(getContext(), "Measured width: " + getMeasuredWidth(), Toast.LENGTH_SHORT).show();
+
+        setMeasuredDimension(getMeasuredWidth(), groupHeight + getPaddingTop() + getPaddingBottom());
     }
 
     @Override
     public void invalidate() {
-        setItems(groupApps);
-
-        groupHeight = 0;
-        for(GroupRow row : groupRows) groupHeight += row.getHeight() + ROW_PADDING;
-        groupHeight -= ROW_PADDING;
-
-        setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, groupHeight));
-
-        super.invalidate();
+        requestLayout();
     }
+
 
     private PointF touchStart;
     private PointF touchCurrent;
@@ -145,16 +151,16 @@ public class AppGroupView extends View implements View.OnTouchListener {
         return true;
     }
 
-
-
     GroupItem getTouchedItem(PointF touch){
-        for(GroupItem item : groupItems){
+        for(GroupItem item : groupItemTouchBounds){
             if(item.contains(touch.x, touch.y)){
                 return item;
             }
         }
         return null;
     }
+
+
 
 
 
@@ -191,11 +197,11 @@ public class AppGroupView extends View implements View.OnTouchListener {
                 int itemX = left + x;
                 int itemY = top + (rowHeight - item.bounds.height()) / 2;
                 AppDrawer.drawApp(canvas, itemX, itemY, item);
-                x += item.bounds.width() + CELL_PADDING;
+                x += item.bounds.width() + CELL_MARGIN;
 
 
                 item.validateCoords(itemX, itemY);
-                groupItems.add(item);
+                groupItemTouchBounds.add(item);
             }
         }
     }
@@ -203,17 +209,18 @@ public class AppGroupView extends View implements View.OnTouchListener {
     class GroupItem extends AppStyle{
         GroupItem(AppData app) {
             super(app);
+            setPadding(CELL_PADDING, ROW_PADDING);
         }
 
-        private Rect absoluteBounds;
+        private Rect touchBounds;
         boolean contains(float x, float y){
-            assert absoluteBounds != null;
+            assert touchBounds != null;
 
-            return absoluteBounds.contains((int) x, (int) y);
+            return touchBounds.contains((int) x, (int) y);
         }
 
         void validateCoords(int x, int y){
-            absoluteBounds = new Rect(x, y, x + bounds.width(), y + bounds.height());
+            touchBounds = new Rect(x, y, x + bounds.width(), y + bounds.height());
         }
     }
 }
