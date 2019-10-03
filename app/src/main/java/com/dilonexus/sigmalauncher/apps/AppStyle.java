@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.TypedValue;
 
+import com.dilonexus.sigmalauncher.misc.Options;
 import com.dilonexus.sigmalauncher.misc.Screen;
 
 public class AppStyle {
@@ -17,7 +18,7 @@ public class AppStyle {
         verticalPadding = vertical;
         validateBounds();
     }
-    public void setPadding(int padding){
+    private void setPadding(int padding){
         setPadding(padding, padding);
     }
     // endregion
@@ -36,7 +37,7 @@ public class AppStyle {
 
     private int popularity;
     private int getTextSize(){
-        return 14 + popularity; // TODO: Вынести минимальный размер текста в настройки
+        return Options.MIN_TEXT_SIZE + popularity;
     }
     float getPaintTextSize(){
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, getTextSize(), Screen.getMetrics());
@@ -63,9 +64,13 @@ public class AppStyle {
 
     Rect textBounds;
     public Rect bounds;
-    void validateBounds(){
+    private void validateBounds(){
         float size = getPaintTextSize();
         textBounds = AppDrawer.getTextBounds(getLabel(), size);
+
+        int height = AppDrawer.getTextBounds("p", size).height();
+        textBounds.top = -height / 2;
+        textBounds.bottom = height / 2;
 
         bounds = new Rect(textBounds);
 
@@ -80,7 +85,7 @@ public class AppStyle {
     }
 
     private String label;
-    private String getLabel(){
+    String getLabel(){
         if(label == null || label.length() < 1) {
             AppData data = AppManager.getAppByID(this.uniqueID);
 
