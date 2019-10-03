@@ -22,6 +22,10 @@ public class AppManager {
         manager = context.getPackageManager();
         loadingIndex = 0;
     }
+    public static void clear(){
+        assert apps != null;
+        apps.clear();
+    }
 
     public static List<AppData> getApps(){
         return apps;
