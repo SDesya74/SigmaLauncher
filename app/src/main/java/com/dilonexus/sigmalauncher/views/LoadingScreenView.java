@@ -15,7 +15,7 @@ public class LoadingScreenView extends LinearLayout {
         setGravity(Gravity.CENTER);
         setOrientation(VERTICAL);
 
-        int size = Screen.getWidth() * 4 / 5;
+        int size = Math.min(Screen.getWidth(), Screen.getHeight()) * 4 / 5;
         progressBar = new RoundProgressBarView(getContext());
         addView(progressBar, new ViewGroup.LayoutParams(size, size));
     }
