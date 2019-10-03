@@ -4,16 +4,20 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
+import com.dilonexus.sigmalauncher.apps.AppData;
 import com.dilonexus.sigmalauncher.apps.AppManager;
 import com.dilonexus.sigmalauncher.misc.DataSaver;
+import com.dilonexus.sigmalauncher.misc.Options;
 import com.dilonexus.sigmalauncher.misc.Screen;
 import com.dilonexus.sigmalauncher.views.LoadingScreenView;
 import com.dilonexus.sigmalauncher.views.widgets.AppGroupView;
+
+import java.util.List;
 
 class Launcher {
     private static Handler handler = new Handler();
@@ -29,14 +33,20 @@ class Launcher {
 
     // region Views
     @SuppressLint("StaticFieldLeak")
-    static FrameLayout parent;
+    private static FrameLayout parent;
     @SuppressLint("StaticFieldLeak")
-    static ScrollView scroll;
+    private static ScrollView scroll;
     @SuppressLint("StaticFieldLeak")
-    static LinearLayout main;
+    private static LinearLayout main;
 
-    static FrameLayout getParent() {
+    private static FrameLayout getParent() {
         return parent;
+    }
+    private static ScrollView getScroll() {
+        return scroll;
+    }
+    private static LinearLayout getMain() {
+        return main;
     }
     // endregion
 
@@ -53,36 +63,42 @@ class Launcher {
         scroll.addView(main);
     }
 
-
     static void invalidate() {
+        Screen.init(context);
+
         clear();
         build();
     }
 
+
     static void show(Activity activity) {
+        ViewGroup activityView = (ViewGroup) getParent().getParent();
+        if(activityView != null) activityView.removeView(getParent());
         activity.setContentView(getParent());
     }
-
 
     static void startLoadingApps() {
         final LoadingScreenView loadingScreen = new LoadingScreenView(context);
         getParent().addView(loadingScreen);
 
+        AppManager.clear();
         AppManager.loadAppsResolve();
 
         // region Load Cached App List
-/*
-        @SuppressWarnings("unchecked")
-        List<AppData> apps = (List<AppData>) DataSaver.readObject("apps");
-        if (apps != null && apps.size() == AppManager.getAppResolveList().size()) {
-            AppManager.setApps(apps);
 
-            invalidate();
-            getParent().removeView(loadingScreen);
+        if(Options.APP_CACHE_ENABLED){
+            @SuppressWarnings("unchecked")
+            List<AppData> apps = (List<AppData>) DataSaver.readObject("apps");
+            if (apps != null && apps.size() == AppManager.getAppResolveList().size()) {
+                AppManager.setApps(apps);
 
-            return;
+                invalidate();
+                getParent().removeView(loadingScreen);
+
+                return;
+            }
         }
-*/
+
         // endregion
 
         // region Load App List In Handler
@@ -106,34 +122,18 @@ class Launcher {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    static void clear(){
+    private static void clear(){
         main.removeAllViews();
     }
 
-    static void build(){
+    private static void build(){
+        Screen.init(context);
+
         AppGroupView group = new AppGroupView(context);
 
         int p = Screen.dip(5);
         group.setPadding(p, p, p, p);
-        group.setWidth(Screen.getWidth());
         group.setItems(AppManager.getApps());
-        Toast.makeText(getContext(), "rows: " + group.getRows().size(), Toast.LENGTH_SHORT).show();
 
         main.addView(group);
     }
