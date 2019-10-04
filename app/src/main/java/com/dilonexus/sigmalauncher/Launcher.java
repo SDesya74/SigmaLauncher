@@ -8,15 +8,20 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import com.dilonexus.sigmalauncher.apps.AppData;
 import com.dilonexus.sigmalauncher.apps.AppManager;
+import com.dilonexus.sigmalauncher.apps.AppSorter;
 import com.dilonexus.sigmalauncher.misc.DataSaver;
 import com.dilonexus.sigmalauncher.misc.Options;
 import com.dilonexus.sigmalauncher.misc.Screen;
 import com.dilonexus.sigmalauncher.views.LoadingScreenView;
-import com.dilonexus.sigmalauncher.views.widgets.AppGroupView;
+import com.dilonexus.sigmalauncher.views.widgets.AppGroup.AppGroupData;
+import com.dilonexus.sigmalauncher.views.widgets.AppGroup.AppGroupView;
+import com.dilonexus.sigmalauncher.views.widgets.WidgetData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 class Launcher {
@@ -42,9 +47,9 @@ class Launcher {
     private static FrameLayout getParent() {
         return parent;
     }
-    private static ScrollView getScroll() {
+    /*private static ScrollView getScroll() {
         return scroll;
-    }
+    }*/
     private static LinearLayout getMain() {
         return main;
     }
@@ -61,6 +66,8 @@ class Launcher {
         main = new LinearLayout(context);
         main.setOrientation(LinearLayout.VERTICAL);
         scroll.addView(main);
+
+        initWidgets();
     }
 
     static void invalidate() {
@@ -126,15 +133,61 @@ class Launcher {
         main.removeAllViews();
     }
 
+
+
+
+
+
+
+    private static List<WidgetData> widgets;
+    private static List<WidgetData> getWidgets(){
+        return widgets;
+    }
+
+    private static void initWidgets(){
+        if(widgets != null && widgets.size() > 0) return;
+
+        @SuppressWarnings("unchecked")
+        List<WidgetData> list = (List<WidgetData>) DataSaver.readObject("widgets");
+        if(list != null){
+            widgets = list;
+            Toast.makeText(context, "Data loaded", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        widgets = new ArrayList<>();
+
+        AppGroupData appGroup = new AppGroupData(AppManager.getApps());
+        appGroup.setSortType(AppSorter.SortType.APP_NAME);
+        appGroup.setPadding(Screen.dip(5), Screen.dip(5));
+        appGroup.setMargin(Screen.dip(5), Screen.dip(5));
+        widgets.add(appGroup);
+
+        DataSaver.saveObject("widgets", widgets);
+    }
+
+
+
     private static void build(){
         Screen.init(context);
 
-        AppGroupView group = new AppGroupView(context);
+        /*
+        AppGroup group = new AppGroup(AppManager.getApps());
+        group.sortBy(AppSorter.SortType.APP_NAME, false);
+
+        AppGroupView view = new AppGroupView(context, group);
 
         int p = Screen.dip(5);
-        group.setPadding(p, p, p, p);
-        group.setItems(AppManager.getApps());
+        view.setPadding(p, p, p, p);
 
-        main.addView(group);
+        main.addView(view);
+        */
+
+        for(WidgetData data : getWidgets()){
+            if(data instanceof AppGroupData){
+                AppGroupView view = new AppGroupView(context, (AppGroupData) data);
+                getMain().addView(view);
+            }
+        }
     }
 }
