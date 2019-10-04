@@ -5,24 +5,28 @@ import java.io.Serializable;
 public class AppData implements Serializable {
     long uniqueID;
     long installTime;
+
     // region Package
     private String packageName;
     public String getPackage(){
         return  packageName;
     }
     // endregion
+
     // region Activity
     private String activityName;
     String getActivity() {
         return activityName;
     }
     // endregion
+
     // region Name
     private String name;
     String getName(){
         return name;
     }
     // endregion
+
     // region Popularity
     private int popularity;
     int getPopularity(){
@@ -38,6 +42,7 @@ public class AppData implements Serializable {
     }
     // endregion
 
+    // region Unique ID
     private long genUniqueId(){
         return Math.round(Math.random() * 10_000_000_000_000_000L);
     }
@@ -49,4 +54,5 @@ public class AppData implements Serializable {
         this.name = name;
         this.popularity = popularity;
     }
+    // endregion
 }
