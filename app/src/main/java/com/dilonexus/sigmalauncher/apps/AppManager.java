@@ -74,7 +74,7 @@ public class AppManager {
         String packageName = info.activityInfo.packageName;
         String activityName = info.activityInfo.name;
         String name = info.loadLabel(manager).toString();
-        Drawable icon = info.loadIcon(manager);
+        // Drawable icon = info.loadIcon(manager);
 
         long time = -1;
         try {
