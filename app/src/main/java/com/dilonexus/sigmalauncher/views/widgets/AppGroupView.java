@@ -103,8 +103,6 @@ public class AppGroupView extends View implements View.OnTouchListener {
         for(GroupRow row : groupRows) groupHeight += row.getHeight() + ROW_MARGIN;
         groupHeight -= ROW_MARGIN;
 
-        Toast.makeText(getContext(), "Measured width: " + getMeasuredWidth(), Toast.LENGTH_SHORT).show();
-
         setMeasuredDimension(getMeasuredWidth(), groupHeight + getPaddingTop() + getPaddingBottom());
     }
 
