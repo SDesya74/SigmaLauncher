@@ -34,15 +34,4 @@ public class AppGroup {
         items.clear();
         items.addAll(set);
     }
-
-
-
-    public void sortBy(final AppSorter.SortType type, boolean reverse){
-        Collections.sort(items, new Comparator<AppData>() {
-            public int compare(AppData a, AppData b) {
-                return AppSorter.compareApps(type, a, b);
-            }
-        });
-        if(reverse) Collections.reverse(items);
-    }
 }
