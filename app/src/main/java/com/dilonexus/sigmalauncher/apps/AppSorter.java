@@ -5,7 +5,9 @@ public class AppSorter {
         APP_NAME, INSTALL_TIME, POPULARITY
     }
 
-    static int compareApps(SortType type, AppData first, AppData second){
+    public static int compareApps(SortType type, AppData first, AppData second){
+        assert type != null;
+
         switch (type){
             case APP_NAME:
                 return first.getName().compareTo(second.getName());
