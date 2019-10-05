@@ -26,8 +26,8 @@ public class DataSaver {
             output.writeObject(data);
             output.flush();
             output.close();
-        }catch (Exception e){
-            Toast.makeText(LauncherApplication.getContext(), e.getMessage() + "", Toast.LENGTH_SHORT).show();
+        }catch (Exception ex){
+            Toast.makeText(LauncherApplication.getContext(), ex.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -41,9 +41,7 @@ public class DataSaver {
             input.close();
 
             return result;
-        } catch (Exception e) {
-            Toast.makeText(LauncherApplication.getContext(), e.getMessage() + "", Toast.LENGTH_SHORT).show();
-        }
+        } catch (Exception ignore) {}
         return null;
     }
 
