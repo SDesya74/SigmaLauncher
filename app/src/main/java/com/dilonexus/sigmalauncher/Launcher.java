@@ -8,12 +8,12 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
 import com.dilonexus.sigmalauncher.apps.AppData;
 import com.dilonexus.sigmalauncher.apps.AppManager;
 import com.dilonexus.sigmalauncher.apps.AppSorter;
 import com.dilonexus.sigmalauncher.misc.DataSaver;
+import com.dilonexus.sigmalauncher.misc.FontManager;
 import com.dilonexus.sigmalauncher.misc.Options;
 import com.dilonexus.sigmalauncher.misc.Screen;
 import com.dilonexus.sigmalauncher.views.LoadingScreenView;
@@ -23,8 +23,9 @@ import com.dilonexus.sigmalauncher.views.widgets.WidgetData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-class Launcher {
+public class Launcher {
     private static Handler handler = new Handler();
 
     // region Context
@@ -66,17 +67,16 @@ class Launcher {
         main = new LinearLayout(context);
         main.setOrientation(LinearLayout.VERTICAL);
         scroll.addView(main);
-
-        initWidgets();
     }
 
-    static void invalidate() {
+    public static void invalidate() {
         Screen.init(context);
 
         clear();
+
+        loadWidgets();
         build();
     }
-
 
     static void show(Activity activity) {
         ViewGroup activityView = (ViewGroup) getParent().getParent();
@@ -98,10 +98,9 @@ class Launcher {
             List<AppData> apps = (List<AppData>) DataSaver.readObject("apps");
             if (apps != null && apps.size() == AppManager.getAppResolveList().size()) {
                 AppManager.setApps(apps);
-
-                invalidate();
                 getParent().removeView(loadingScreen);
 
+                onAppsLoaded();
                 return;
             }
         }
@@ -115,50 +114,44 @@ class Launcher {
                 loadingScreen.setProgress(AppManager.getLoadingProgress());
                 if (!stop) handler.post(this);
                 else {
-                    invalidate();
                     getParent().removeView(loadingScreen);
-
                     DataSaver.saveObject("apps", AppManager.getApps());
+
+                    onAppsLoaded();
                 }
             }
         });
         // endregion
     }
-
-
-
-
+    private static void onAppsLoaded(){
+        invalidate();
+    }
 
     private static void clear(){
         main.removeAllViews();
     }
-
-
-
-
-
-
 
     private static List<WidgetData> widgets;
     private static List<WidgetData> getWidgets(){
         return widgets;
     }
 
-    private static void initWidgets(){
-        if(widgets != null && widgets.size() > 0) return;
+    private static void loadWidgets(){
 
-        @SuppressWarnings("unchecked")
-        List<WidgetData> list = (List<WidgetData>) DataSaver.readObject("widgets");
-        if(list != null){
-            widgets = list;
-            Toast.makeText(context, "Data loaded", Toast.LENGTH_SHORT).show();
-            return;
+        if(Options.APP_CACHE_ENABLED){
+            // noinspection unchecked
+            widgets = (List<WidgetData>) DataSaver.readObject("widgets");
+            if(widgets != null && widgets.size() > 0) {
+                return;
+            }
         }
+
 
         widgets = new ArrayList<>();
 
         AppGroupData appGroup = new AppGroupData(AppManager.getApps());
-        appGroup.setSortType(AppSorter.SortType.APP_NAME);
+        appGroup.setSortType(AppSorter.SortType.INSTALL_TIME);
+        appGroup.setReverseSorting(true);
         appGroup.setPadding(Screen.dip(5), Screen.dip(5));
         appGroup.setMargin(Screen.dip(5), Screen.dip(5));
         widgets.add(appGroup);
@@ -166,28 +159,41 @@ class Launcher {
         DataSaver.saveObject("widgets", widgets);
     }
 
-
-
     private static void build(){
         Screen.init(context);
 
-        /*
-        AppGroup group = new AppGroup(AppManager.getApps());
-        group.sortBy(AppSorter.SortType.APP_NAME, false);
+        for(WidgetData widget : getWidgets()){
+            if(widget instanceof AppGroupData){
+                AppGroupData data = (AppGroupData) widget;
 
-        AppGroupView view = new AppGroupView(context, group);
-
-        int p = Screen.dip(5);
-        view.setPadding(p, p, p, p);
-
-        main.addView(view);
-        */
-
-        for(WidgetData data : getWidgets()){
-            if(data instanceof AppGroupData){
-                AppGroupView view = new AppGroupView(context, (AppGroupData) data);
+                AppGroupView view = new AppGroupView(context, data);
                 getMain().addView(view);
             }
         }
+    }
+
+
+
+
+
+
+
+
+
+    public static boolean onMenuOpened(){
+
+        /*
+        DataSaver.deleteFile("apps");
+        DataSaver.deleteFile("widgets");
+        */
+
+
+        /*
+        int rnd = new Random().nextInt(FontManager.getFonts().size());
+        FontManager.setCurrentFont(FontManager.getFonts().get(rnd));
+        */
+        Launcher.invalidate();
+
+        return true;
     }
 }
