@@ -10,28 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FontManager {
+    private static AssetManager assets;
+
+    // region Font List
     private static List<Font> list;
     public static List<Font> getFonts(){
         return list;
     }
-    private static Typeface currentFont;
-    public static Typeface getCurrentFont(){
-        return currentFont;
-    }
-    private static AssetManager assets;
-
-
-    public static void setCurrentFont(String name){
-        Font font = getFontByName(name);
-        if(font == null) setCurrentFont(Typeface.DEFAULT);
-        else setCurrentFont(font.get());
-    }
-    public static void setCurrentFont(Font font){
-        assert font != null;
-
-        setCurrentFont(font.get());
-    }
-
     private static Font getFontByName(String name){
         if(name.toLowerCase().equals("default")) return getDefaultFont();
         for (Font font : list) {
@@ -39,15 +24,21 @@ public class FontManager {
         }
         return null;
     }
-
     private static Font getDefaultFont(){
         return new Font("DEFAULT", Typeface.DEFAULT);
     }
+    // endregion
 
-    private static void setCurrentFont(Typeface typeface){
-        assert typeface != null;
-        currentFont = typeface;
+    // region Current Font
+    private static Font currentFont;
+    public static Typeface getCurrentFont(){
+        return currentFont == null ? getDefaultFont().get() : currentFont.get();
     }
+    public static void setCurrentFont(Font font){
+        assert font != null;
+        currentFont = font;
+    }
+    // endregion
 
     private static void loadFonts(){
         list = new ArrayList<>();
