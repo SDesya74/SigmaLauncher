@@ -1,7 +1,9 @@
 package com.dilonexus.sigmalauncher.apps;
 
-public class AppSorter {
-    public enum SortType{
+import java.io.Serializable;
+
+public class AppSorter implements Serializable {
+    public enum SortType implements Serializable{
         APP_NAME, INSTALL_TIME, POPULARITY
     }
 
