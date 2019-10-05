@@ -5,17 +5,13 @@ import android.view.Menu;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.dilonexus.sigmalauncher.misc.DataSaver;
-import com.dilonexus.sigmalauncher.misc.FontManager;
-
-import java.util.Random;
-
 public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Launcher.show(this);
-        Launcher.startLoadingApps();
+        Launcher.startLoading();
     }
 
 
@@ -26,6 +22,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        Launcher.onBackPressed();
     }
 }
