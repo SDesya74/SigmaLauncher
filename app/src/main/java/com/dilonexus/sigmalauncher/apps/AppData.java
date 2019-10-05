@@ -3,7 +3,7 @@ package com.dilonexus.sigmalauncher.apps;
 import java.io.Serializable;
 
 public class AppData implements Serializable {
-    long uniqueID;
+    public long uniqueID;
     long installTime;
 
     // region Package
@@ -29,11 +29,11 @@ public class AppData implements Serializable {
 
     // region Popularity
     private int popularity;
-    int getPopularity(){
+    public int getPopularity(){
         return popularity;
     }
 
-    private void setPopularity(int popularity){
+    public void setPopularity(int popularity){
         this.popularity = popularity;
     }
 
