@@ -5,6 +5,7 @@ import android.view.Menu;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.dilonexus.sigmalauncher.misc.DataSaver;
 import com.dilonexus.sigmalauncher.misc.FontManager;
 
 import java.util.Random;
@@ -20,11 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onMenuOpened(int featureId, Menu menu) {
-        int rnd = new Random().nextInt(FontManager.getFonts().size());
-        FontManager.setCurrentFont(FontManager.getFonts().get(rnd));
-        Launcher.invalidate();
-
-        return false;
+        return Launcher.onMenuOpened();
     }
 
     @Override
