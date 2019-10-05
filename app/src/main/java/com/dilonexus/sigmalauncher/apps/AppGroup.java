@@ -1,5 +1,6 @@
 package com.dilonexus.sigmalauncher.apps;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -7,7 +8,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-public class AppGroup {
+public class AppGroup implements Serializable {
     private List<AppData> items;
     public List<AppData> getItems() {
         return items;
