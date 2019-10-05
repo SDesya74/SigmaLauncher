@@ -3,10 +3,9 @@ package com.dilonexus.sigmalauncher.misc;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
-import android.provider.ContactsContract;
 import android.widget.Toast;
 
-import com.dilonexus.sigmalauncher.LauncherApplication;
+import com.dilonexus.sigmalauncher.Launcher;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -38,15 +37,25 @@ public class FontManager {
     public static Typeface getCurrentFont(){
         return currentFont == null ? getDefaultFont().get() : currentFont.get();
     }
+    public static String getCurrentFontName(){
+        return currentFont.getName();
+    }
     public static void setCurrentFont(Font font){
         assert font != null;
         currentFont = font;
-        DataSaver.saveObject("currentFont", currentFont);
+        save();
     }
     // endregion
 
-    private static void loadFonts(){
+
+    public static void init(Context context){
+        assets = context.getAssets();
+    }
+
+    public static void load(){
         list = new ArrayList<>();
+
+        // region Load From Assets
         try {
             String[] folder = assets.list("fonts");
             assert folder != null;
@@ -58,21 +67,21 @@ public class FontManager {
                 list.add(font);
             }
 
-            Font current = (Font) DataSaver.readObject("currentFont");
-            if(current != null){
-                Toast.makeText(LauncherApplication.getContext(), "Default Font Loaded", Toast.LENGTH_SHORT).show();
-                String name = current.getName();
-                setCurrentFont(getFontByName(name));
-            }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+        // endregion
 
-    public static void init(Context context){
-        assets = context.getAssets();
-        loadFonts();
+        // region Load Current Font
+        String name = (String) DataSaver.readObject("currentFont");
+        if(name != null){
+            Toast.makeText(Launcher.getContext(), "Current Font Loaded", Toast.LENGTH_SHORT).show();
+            setCurrentFont(getFontByName(name));
+        }else setCurrentFont(getDefaultFont());
+        // endregion
+    }
+    private static void save(){
+        DataSaver.saveObject("currentFont", currentFont.getName());
     }
 
     public static class Font implements Serializable {
