@@ -3,6 +3,10 @@ package com.dilonexus.sigmalauncher.misc;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
+import android.provider.ContactsContract;
+import android.widget.Toast;
+
+import com.dilonexus.sigmalauncher.LauncherApplication;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -37,6 +41,7 @@ public class FontManager {
     public static void setCurrentFont(Font font){
         assert font != null;
         currentFont = font;
+        DataSaver.saveObject("currentFont", currentFont);
     }
     // endregion
 
@@ -45,12 +50,21 @@ public class FontManager {
         try {
             String[] folder = assets.list("fonts");
             assert folder != null;
+
             for(String file : folder){
                 Typeface typeface = Typeface.createFromAsset(assets, "fonts/" + file);
 
                 Font font = new Font(file, typeface);
                 list.add(font);
             }
+
+            Font current = (Font) DataSaver.readObject("currentFont");
+            if(current != null){
+                Toast.makeText(LauncherApplication.getContext(), "Default Font Loaded", Toast.LENGTH_SHORT).show();
+                String name = current.getName();
+                setCurrentFont(getFontByName(name));
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
