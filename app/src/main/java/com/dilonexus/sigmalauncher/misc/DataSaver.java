@@ -1,6 +1,9 @@
 package com.dilonexus.sigmalauncher.misc;
 
 import android.content.Context;
+import android.widget.Toast;
+
+import com.dilonexus.sigmalauncher.LauncherApplication;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,7 +27,7 @@ public class DataSaver {
             output.flush();
             output.close();
         }catch (Exception e){
-            e.printStackTrace();
+            Toast.makeText(LauncherApplication.getContext(), e.getMessage() + "", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -39,9 +42,15 @@ public class DataSaver {
 
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            Toast.makeText(LauncherApplication.getContext(), e.getMessage() + "", Toast.LENGTH_SHORT).show();
         }
         return null;
+    }
+
+    public static void deleteFile(String path){
+        File directory = getInternalDirectory();
+        //noinspection ResultOfMethodCallIgnored
+        new File(directory, path).delete();
     }
 
     private static File getInternalDirectory(){
