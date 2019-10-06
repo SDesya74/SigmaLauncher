@@ -110,6 +110,7 @@ public class AppManager {
                 }
 
                 float progress = 0f;
+                infoList = new ArrayList<>();
                 for (ResolveInfo res : resolve) {
                     AppInfo info = loadAppInfo(res);
                     if (getAppData(info.getKey()) == null) dataList.add(new AppData(info.getKey()));
