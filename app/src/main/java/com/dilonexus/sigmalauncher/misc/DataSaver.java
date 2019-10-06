@@ -3,7 +3,7 @@ package com.dilonexus.sigmalauncher.misc;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.dilonexus.sigmalauncher.LauncherApplication;
+import com.dilonexus.sigmalauncher.Launcher;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,7 +27,7 @@ public class DataSaver {
             output.flush();
             output.close();
         }catch (Exception ex){
-            Toast.makeText(LauncherApplication.getContext(), ex.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(Launcher.getContext(), ex.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
