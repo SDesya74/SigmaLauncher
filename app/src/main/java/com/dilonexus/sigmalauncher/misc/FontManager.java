@@ -3,9 +3,6 @@ package com.dilonexus.sigmalauncher.misc;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
-import android.widget.Toast;
-
-import com.dilonexus.sigmalauncher.Launcher;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -37,7 +34,7 @@ public class FontManager {
     public static Typeface getCurrentFont(){
         return currentFont == null ? getDefaultFont().get() : currentFont.get();
     }
-    public static String getCurrentFontName(){
+    private static String getCurrentFontName(){
         return currentFont.getName();
     }
     public static void setCurrentFont(Font font){
@@ -45,8 +42,7 @@ public class FontManager {
         currentFont = font;
         save();
     }
-    // endregion
-
+    // endregionы
 
     public static void init(Context context){
         assets = context.getAssets();
@@ -75,13 +71,12 @@ public class FontManager {
         // region Load Current Font
         String name = (String) DataSaver.readObject("currentFont");
         if(name != null){
-            Toast.makeText(Launcher.getContext(), "Current Font Loaded", Toast.LENGTH_SHORT).show();
             setCurrentFont(getFontByName(name));
         }else setCurrentFont(getDefaultFont());
         // endregion
     }
     private static void save(){
-        DataSaver.saveObject("currentFont", currentFont.getName());
+        DataSaver.saveObject("currentFont", getCurrentFontName());
     }
 
     public static class Font implements Serializable {
