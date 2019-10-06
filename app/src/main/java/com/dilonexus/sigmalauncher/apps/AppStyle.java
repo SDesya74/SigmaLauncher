@@ -1,6 +1,7 @@
 package com.dilonexus.sigmalauncher.apps;
 
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.TypedValue;
 
@@ -8,63 +9,29 @@ import com.dilonexus.sigmalauncher.misc.Options;
 import com.dilonexus.sigmalauncher.misc.Screen;
 
 public class AppStyle {
-    public long uniqueID;
+    private String key;
+    public String getKey(){
+        return key;
+    }
 
-    // region Paddings
-    private int horizontalPadding;
-    private int verticalPadding;
+
+    private Point padding;
     protected void setPadding(int vertical, int horizontal){
-        horizontalPadding = horizontal;
-        verticalPadding = vertical;
-        validateBounds();
+        padding = new Point(vertical, horizontal);
+        validate();
     }
     private void setPadding(int padding){
         setPadding(padding, padding);
     }
-    // endregion
 
-    int backColor;
-    // private int backShape;
-    // private int backStyle;
+    public Rect backBounds;
+    public Rect textBounds;
 
-    int textColor;
-    private void setTextColorByBackColor(){
-        int c = backColor;
-        if((Color.red(c)*0.299 + Color.green(c)*0.587 + Color.blue(c)*0.114) > 186){
-            textColor = Color.BLACK;
-        }else textColor = Color.WHITE;
-    }
-
-    private int popularity;
-    private int getTextSize(){
-        return Options.MIN_TEXT_SIZE + popularity;
-    }
-    float getPaintTextSize(){
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, getTextSize(), Screen.getMetrics());
-    }
-
-    public void updatePopularity(){
-        AppData data = AppManager.getAppByID(this.uniqueID);
-
+    private void validate(){
+        AppData data = AppManager.getAppData(key);
         assert data != null;
+        this.popularity = data.popularity;
 
-        this.popularity = data.getPopularity();
-    }
-
-    public AppStyle(AppData app){
-        this.uniqueID = app.uniqueID;
-        this.label = app.getName();
-        this.popularity = app.getPopularity();
-
-        setPadding(0);
-
-        this.backColor = Color.TRANSPARENT;
-        setTextColorByBackColor();
-    }
-
-    Rect textBounds;
-    public Rect bounds;
-    private void validateBounds(){
         float size = getPaintTextSize();
         textBounds = AppDrawer.getTextBounds(getLabel(), size);
 
@@ -72,27 +39,61 @@ public class AppStyle {
         textBounds.top = -height / 2;
         textBounds.bottom = height / 2;
 
-        bounds = new Rect(textBounds);
-
+        backBounds = new Rect(textBounds);
         // region Paddings
-        bounds.left -= horizontalPadding;
-        bounds.right += horizontalPadding;
+        backBounds.left -= padding.x;
+        backBounds.right += padding.x;
 
-        bounds.top -= verticalPadding;
-        bounds.bottom += verticalPadding;
-
+        backBounds.top -= padding.y;
+        backBounds.bottom += padding.y;
         // endregion
     }
+
+
+
+    public int popularity;
+    private int getTextSize(){
+        return Options.MIN_TEXT_SIZE + popularity;
+    }
+    float getPaintTextSize(){
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, getTextSize(), Screen.getMetrics());
+    }
+
 
     private String label;
     String getLabel(){
         if(label == null || label.length() < 1) {
-            AppData data = AppManager.getAppByID(this.uniqueID);
+            AppInfo info = AppManager.getAppInfo(this.getKey());
+            assert info != null;
 
-            assert data != null;
-
-            label = data.getName();
+            label = info.name;
         }
         return label;
+    }
+
+
+
+    public int backColor;
+    public int textColor;
+
+
+
+
+
+
+
+
+    public AppStyle(AppInfo app){
+        this.key = app.getKey();
+        this.label = app.name;
+
+        AppData data = AppManager.getAppData(app.getKey());
+        assert data != null;
+        this.popularity = data.popularity;
+
+        setPadding(0);
+
+        this.backColor = Color.TRANSPARENT;
+        this.textColor = Color.LTGRAY;
     }
 }
