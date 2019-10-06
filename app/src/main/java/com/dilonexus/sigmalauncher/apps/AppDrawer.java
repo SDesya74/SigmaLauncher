@@ -21,11 +21,10 @@ public class AppDrawer {
             int sx = x - 1;
             int sy = y - 1;
 
-            int ex = x + 2 + style.bounds.width();
-            int ey = y + 2 + style.bounds.height();
+            int ex = x + 2 + style.backBounds.width();
+            int ey = y + 2 + style.backBounds.height();
             canvas.drawRect(sx, sy, ex, ey, paint);
         }
-
 
         paint.setColor(style.backColor);
 
@@ -36,13 +35,13 @@ public class AppDrawer {
         canvas.drawRect(
                 x,
                 y,
-                x + style.bounds.width(),
-                y + style.bounds.height(),
+                x + style.backBounds.width(),
+                y + style.backBounds.height(),
                 paint);
 
         canvas.drawText(style.getLabel(),
-                x + (style.bounds.width() - style.textBounds.width()) / 2,
-                y + (style.bounds.height() + style.textBounds.height()) / 2, textPaint);
+                x + (style.backBounds.width() - style.textBounds.width()) / 2,
+                y + (style.backBounds.height() + style.textBounds.height()) / 2, textPaint);
     }
 
 
