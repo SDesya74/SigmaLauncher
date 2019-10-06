@@ -12,7 +12,7 @@ import java.util.List;
 public class AppGroupData extends WidgetData implements Serializable {
     // region Items
     private List<AppData> items;
-    List<AppData> getItems(){
+    public List<AppData> getItems(){
         return items;
     }
     // endregion
