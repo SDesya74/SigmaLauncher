@@ -11,12 +11,11 @@ public class LauncherApplication extends android.app.Application {
     public void onCreate() {
         super.onCreate();
         Context context = getApplicationContext();
-
         Screen.init(context);
 
         AppManager.init(context);
-
         DataSaver.init(context);
+
 
 
         FontManager.init(context);
